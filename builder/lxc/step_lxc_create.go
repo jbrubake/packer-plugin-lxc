@@ -44,7 +44,7 @@ func (s *stepLxcCreate) Run(ctx context.Context, state multistep.StateBag) multi
 	// prevent tmp from being cleaned on boot, we put provisioning scripts there
 	// todo: wait for init to finish before moving on to provisioning instead of this
 	commands[1] = []string{"touch", filepath.Join(rootfs, "tmp", ".tmpfs")}
-	commands[2] = append([]string{"lxc-start"}, config.StartOptions...)
+	commands[2] = append([]string{"systemd-run", "--user", "--scope", "-p", "Delegate=yes", "--", "lxc-start"}, config.StartOptions...)
 	commands[2] = append(commands[2], []string{"-d", "--name", name}...)
 
 	ui.Say("Creating container...")
